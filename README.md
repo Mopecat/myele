@@ -4,4 +4,4 @@
 ## first step
 npm install
 
-## 偶哈哈
+## 偶哈哈...
