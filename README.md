@@ -4,4 +4,7 @@
 ## first step
 npm install
 
-## 偶哈哈...
+## second step
+npm run dev
+
+## 偶哈哈
