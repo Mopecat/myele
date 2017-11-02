@@ -28,7 +28,7 @@ var ratings = appData.ratings;
 var apiRoutes = express.Router();
 apiRoutes.get('/seller',function(req,res){
   res.json({
-    errn:0,
+    errno:0,
     data:seller
   })
 });
