@@ -36,12 +36,14 @@
         </li>
       </ul>
     </div>
+    <shopcart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import BScroll from 'better-scroll';
   import http from '../../common/js/axios';
+  import shopcart from '../shopcart/shopcart.vue';
 
   export default {
     props: {
@@ -80,7 +82,7 @@
         let foodList = this.$refs.foodsWrapper.getElementsByClassName('food-list-hook');
         let el = foodList[index];
         this.foodsScroll.scrollToElement(el, 300);
-        console.log(index);
+        // console.log(index);
       },
       fetchData: async function () {
         const goods = await http.get('/api/goods');
@@ -112,6 +114,9 @@
           this.listHeight.push(height);
         }
       }
+    },
+    components: {
+      shopcart
     }
 
   };
