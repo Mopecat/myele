@@ -102,6 +102,7 @@
           click: true
         });
         this.foodsScroll = new BScroll(this.$refs.foodsWrapper, {
+          click: true,
           probeType: 3
         });
         this.foodsScroll.on('scroll', (pos) => {
