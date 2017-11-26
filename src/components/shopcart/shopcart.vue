@@ -13,11 +13,23 @@
         </div>
         <div class="desc">另需配送费{{deliveryPrice}}元</div>
       </div>
-      <div class="content-right" >
+      <div class="content-right">
         <div class="pay" :class="payClass">
           {{payDesc}}
         </div>
       </div>
+    </div>
+    <div class="ball-container">
+      <!--<transition-group tag="div"
+                        name="drop"
+                        enter-class=""
+                        enter-active-class=""
+                        leave-class=""
+                        leave-active-class="">-->
+      <div v-for="(ball, index) in balls" v-show="ball.show" :key="ball.index" class="ball">
+        <span class="inner" :key="-ball.index"></span>
+      </div>
+      <!--</transition-group>-->
     </div>
   </div>
 </template>
@@ -37,6 +49,27 @@
       minPrice: {
         type: Number
       }
+    },
+    data() {
+      return {
+        balls: [
+          {
+            show: false
+          },
+          {
+            show: false
+          },
+          {
+            show: false
+          },
+          {
+            show: false
+          },
+          {
+            show: false
+          }
+        ]
+      };
     },
     computed: {
       totalPrice() {
@@ -69,6 +102,11 @@
         } else {
           return 'enough';
         }
+      }
+    },
+    methods: {
+      drop(el) {
+        console.log(el);
       }
     }
   };
@@ -167,4 +205,20 @@
           &.enough
             background: #00b43c
             color: #fff
+    .ball-container
+      .ball
+        position: fixed
+        bottom: 22px
+        z-index: 200
+        left: 32px
+        transition: all 0.4s
+        .inner
+          display: inline-block
+          width: 16px
+          height: 16px
+          -webkit-border-radius: 50%
+          -moz-border-radius: 50%
+          border-radius: 50%
+          background: rgb(0, 160, 220)
+          transition: all 0.4s
 </style>

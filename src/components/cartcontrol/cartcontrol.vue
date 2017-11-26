@@ -17,7 +17,6 @@
 
 <script type="text/ecmascript-6">
   import Vue from 'vue';
-
   export default {
     props: {
       food: {
@@ -40,6 +39,7 @@
         } else {
           this.food.count++;
         }
+        this.$emit('cartAdd', event.target);
       },
       decreaseCart(event) {
         if (!event._constructed) {
@@ -75,7 +75,7 @@
         opacity: 0
         transform: translate3D(24px, 0, 0)
         .inner
-          transform:rotate(180deg)
+          transform: rotate(180deg)
     .cart-count
       display: inline-block
       vertical-align: top
