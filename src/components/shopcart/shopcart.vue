@@ -20,15 +20,16 @@
       </div>
     </div>
     <div class="ball-container">
-      <transition-group tag="div"
-                        name="drop"
-                        v-on:before-enter="beforeEnter"
-                        v-on:enter="enter"
-                        v-on:after-enter="afterEnter">
-        <div v-for="(ball, index) in balls" v-show="ball.show" :key="index" class="ball">
+      <transition name="drop"
+                  @before-enter="beforeEnter"
+                  @enter="enter"
+                  @after-enter="afterEnter"
+                  v-bind:css="false"
+                  v-for="(ball, index) in balls" :key="index">
+        <div v-show="ball.show" class="ball">
           <div class="inner inner-hook"></div>
         </div>
-      </transition-group>
+      </transition>
     </div>
   </div>
 </template>
