@@ -136,7 +136,7 @@
           }
         }
       },
-      enter(el) {
+      enter(el, done) {
         /* eslint-disable no-unused-vars */
         let rf = el.offsetHeight;
         this.$nextTick(() => {
@@ -146,12 +146,17 @@
           inner.style.webkitTransform = 'translate3d($0,0,0)';
           inner.style.transform = 'translate3d(0,0,0)';
         });
+        done();
       },
       afterEnter(el) {
         let ball = this.dropBalls.shift();
         if (ball) {
-          ball.show = false;
-          el.style.display = 'none';
+          console.log(ball);
+          setTimeout(function () {
+            console.log(1);
+            ball.show = false;
+            el.style.display = 'none';
+          }, 4e2);
         }
       }
     }
@@ -257,7 +262,7 @@
         left: 32px
         bottom: 22px
         z-index: 200
-        transition: all 2s
+        transition: all 0.4s
         .inner
           width: 16px
           height: 16px
@@ -265,5 +270,5 @@
           -moz-border-radius: 50%
           border-radius: 50%
           background: rgb(0, 160, 220)
-          transition: all 2s
+          transition: all 0.4s
 </style>
