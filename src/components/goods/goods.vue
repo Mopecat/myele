@@ -114,9 +114,10 @@
       _drop(target) {
         // console.log(1);
         // 体验优化，异步执行下落动画
-        // this.$nextTick(() => {
+        this.$nextTick(() => {
           this.$refs.shopcart.drop(target);
-        // });
+        });
+
       },
       _initScroll() {
         this.menuScroll = new BScroll(this.$refs.menuWrapper, {
