@@ -117,7 +117,6 @@
         this.$nextTick(() => {
           this.$refs.shopcart.drop(target);
         });
-
       },
       _initScroll() {
         this.menuScroll = new BScroll(this.$refs.menuWrapper, {
