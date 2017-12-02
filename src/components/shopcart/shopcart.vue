@@ -31,23 +31,29 @@
         </div>
       </transition>
     </div>
-    <div class="shopcart-list" v-show="listShow">
-      <div class="list-header">
-        <h1 class="title">购物车</h1>
-        <span class="empty">清空</span>
+    <transition name="fold"
+                enter-class="fold-in-transition"
+                enter-active-class="fold-enter"
+                leave-class="fold-out-transition"
+                leave-active-class="fold-leave">
+      <div class="shopcart-list" v-show="listShow">
+        <div class="list-header">
+          <h1 class="title">购物车</h1>
+          <span class="empty">清空</span>
+        </div>
+        <div class="list-content">
+          <ul>
+            <li class="food" v-for="food in selectFoods">
+              <span class="name">{{food.name}}</span>
+              <div class="price"><span>￥{{food.price*food.count}}</span></div>
+              <div class="cartcontrol-wrapper">
+                <cartcontrol :food="food"></cartcontrol>
+              </div>
+            </li>
+          </ul>
+        </div>
       </div>
-      <div class="list-content">
-        <ul>
-          <li class="food" v-for="food in selectFoods">
-            <span class="name">{{food.name}}</span>
-            <div class="price"><span>￥{{food.price*food.count}}</span></div>
-            <div class="cartcontrol-wrapper">
-              <cartcontrol :food="food"></cartcontrol>
-            </div>
-          </li>
-        </ul>
-      </div>
-    </div>
+    </transition>
   </div>
 </template>
 
@@ -146,6 +152,12 @@
           }
         }
       },
+      toggleList() {
+        if (!this.totalCount) {
+          return;
+        }
+        this.fold = !this.fold;
+      },
       beforeEnter(el) {
         let count = this.balls.length;
         while (count--) {
@@ -186,12 +198,6 @@
             el.style.display = 'none';
           }, 4e2);
         }
-      },
-      toggleList() {
-        if (!this.totalCount) {
-          return;
-        }
-        this.fold = !this.fold;
       }
     },
     components: {
@@ -308,4 +314,34 @@
           border-radius: 50%
           background: rgb(0, 160, 220)
           transition: all 0.4s linear
+    .shopcart-list
+      position: absolute
+      left: 0
+      top: 0
+      width: 100%
+      z-index: -1
+      transition: all 0.5s
+      &.fold-in-transition, &.fold-out-transition
+        transform: translate3d(0, 0, 0)
+      &.fold-enter, &.fold-leave
+        transform: translate3d(0, -100%, 0)
+      .list-header
+        height: 40px
+        line-height: 40px
+        padding: 0 18px
+        border-bottom: 2px solid rgba(7, 17, 27, 0.1)
+        background: #f3f5f7
+        .title
+          float: left
+          font-size: 14px
+          color: rgb(7, 17, 27)
+        .empty
+          float: right
+          font-size: 12px
+          color: rgb(0, 160, 220)
+      .list-content
+        padding: 0 18px
+        max-height: 217px
+        overflow: hidden
+        background: #fff
 </style>
