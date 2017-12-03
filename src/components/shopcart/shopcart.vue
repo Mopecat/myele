@@ -15,7 +15,7 @@
           <div class="desc">另需配送费{{deliveryPrice}}元</div>
         </div>
         <div class="content-right">
-          <div class="pay" :class="payClass">
+          <div class="pay" @click="pay" :class="payClass">
             {{payDesc}}
           </div>
         </div>
@@ -176,6 +176,12 @@
         this.selectFoods.forEach((food) => {
           food.count = 0;
         });
+      },
+      pay() {
+        if (this.totalPrice < this.minPrice) {
+          return;
+        }
+        window.alert(`支付${this.totalPrice}元`);
       },
       hideList() {
         this.fold = true;
@@ -399,9 +405,9 @@
     opacity: 1
     backdrop-filter: blur(10px)
     background: rgba(7, 17, 27, 0.6)
-    .fade-enter-active, .fade-leave-active
+    &.fade-enter-active, &.fade-leave-active
       transition: all .5s
-    .fade-enter, .fade-leave-to
+    &.fade-enter, &.fade-leave-to
       opacity: 0
       background: rgba(7, 17, 27, 0)
 </style>
