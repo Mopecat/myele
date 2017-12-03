@@ -1,64 +1,67 @@
 <template>
-  <div class="shopcart">
-    <div class="content" @click="toggleList">
-      <div class="content-left">
-        <div class="logo-wrapper">
-          <div class="logo" :class="{'highlight':totalCount>0}">
-            <span class="icon-shopping_cart" :class="{'highlight':totalCount>0}"></span>
+  <div>
+    <div class="shopcart">
+      <div class="content" @click="toggleList">
+        <div class="content-left">
+          <div class="logo-wrapper">
+            <div class="logo" :class="{'highlight':totalCount>0}">
+              <span class="icon-shopping_cart" :class="{'highlight':totalCount>0}"></span>
+            </div>
+            <div class="num" v-show="totalCount>0">{{totalCount}}</div>
           </div>
-          <div class="num" v-show="totalCount>0">{{totalCount}}</div>
+          <div class="price" :class="{'highlight':totalPrice>0}">
+            ￥{{totalPrice}}
+          </div>
+          <div class="desc">另需配送费{{deliveryPrice}}元</div>
         </div>
-        <div class="price" :class="{'highlight':totalPrice>0}">
-          ￥{{totalPrice}}
+        <div class="content-right">
+          <div class="pay" :class="payClass">
+            {{payDesc}}
+          </div>
         </div>
-        <div class="desc">另需配送费{{deliveryPrice}}元</div>
       </div>
-      <div class="content-right">
-        <div class="pay" :class="payClass">
-          {{payDesc}}
-        </div>
+      <div class="ball-container">
+        <transition name="drop"
+                    @before-enter="beforeEnter"
+                    @enter="enter"
+                    @after-enter="afterEnter"
+                    v-bind:css="false"
+                    v-for="(ball, index) in balls" :key="index">
+          <div v-show="ball.show" class="ball">
+            <div class="inner inner-hook"></div>
+          </div>
+        </transition>
       </div>
-    </div>
-    <div class="ball-container">
-      <transition name="drop"
-                  @before-enter="beforeEnter"
-                  @enter="enter"
-                  @after-enter="afterEnter"
-                  v-bind:css="false"
-                  v-for="(ball, index) in balls" :key="index">
-        <div v-show="ball.show" class="ball">
-          <div class="inner inner-hook"></div>
+      <transition name="fold">
+        <div class="shopcart-list" v-show="listShow">
+          <div class="list-header">
+            <h1 class="title">购物车</h1>
+            <span class="empty" @click="empty">清空</span>
+          </div>
+          <div class="list-content" ref="listContent">
+            <ul>
+              <li class="food" v-for="food in selectFoods">
+                <span class="name">{{food.name}}</span>
+                <div class="price"><span>￥{{food.price*food.count}}</span></div>
+                <div class="cartcontrol-wrapper">
+                  <cartcontrol :food="food"></cartcontrol>
+                </div>
+              </li>
+            </ul>
+          </div>
         </div>
       </transition>
     </div>
-    <transition name="fold"
-                enter-class="fold-in-transition"
-                enter-active-class="fold-enter"
-                leave-class="fold-out-transition"
-                leave-active-class="fold-leave">
-      <div class="shopcart-list" v-show="listShow">
-        <div class="list-header">
-          <h1 class="title">购物车</h1>
-          <span class="empty">清空</span>
-        </div>
-        <div class="list-content">
-          <ul>
-            <li class="food" v-for="food in selectFoods">
-              <span class="name">{{food.name}}</span>
-              <div class="price"><span>￥{{food.price*food.count}}</span></div>
-              <div class="cartcontrol-wrapper">
-                <cartcontrol :food="food"></cartcontrol>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </div>
+
+    <transition name="fade">
+      <div class="list-mask" @click="hideList" v-show="listShow"></div>
     </transition>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import cartcontrol from '../cartcontrol/cartcontrol.vue';
+  import BScroll from 'better-scroll';
 
   export default {
     props: {
@@ -136,6 +139,17 @@
           return false;
         }
         let show = !this.fold;
+        if (show) {
+          this.$nextTick(() => {
+            if (!this.scroll) {
+              this.scroll = new BScroll(this.$refs.listContent, {
+                click: true
+              });
+            } else {
+              this.scroll.refresh();
+            }
+          });
+        }
         return show;
       }
     },
@@ -158,6 +172,14 @@
         }
         this.fold = !this.fold;
       },
+      empty() {
+        this.selectFoods.forEach((food) => {
+          food.count = 0;
+        });
+      },
+      hideList() {
+        this.fold = true;
+      },
       beforeEnter(el) {
         let count = this.balls.length;
         while (count--) {
@@ -165,7 +187,7 @@
           if (ball.show) {
             let rect = ball.el.getBoundingClientRect();
             let x = rect.left - 32;
-            console.log(x);
+            // console.log(x);
             let y = -(window.innerHeight - rect.top - 22);
             el.style.display = '';
             el.style.webkitTransform = `translate3d(0,${y}px,0)`;
@@ -193,7 +215,7 @@
         if (ball) {
           console.log(ball);
           setTimeout(function () {
-            console.log(1);
+            // console.log(1);
             ball.show = false;
             el.style.display = 'none';
           }, 4e2);
@@ -207,6 +229,7 @@
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
+  @import "../../common/stylus/mixin.styl";
   .shopcart
     position: fixed
     left: 0
@@ -320,11 +343,11 @@
       top: 0
       width: 100%
       z-index: -1
-      transition: all 0.5s
-      &.fold-in-transition, &.fold-out-transition
+      transform: translate3d(0, -100%, 0)
+      &.fold-enter-active, &.fold-leave-active
+        transition: all 0.5s
+      &.fold-enter, &.fold-leave-active
         transform: translate3d(0, 0, 0)
-      &.fold-enter, &.fold-leave
-        transform: translate3d(0, -100%, 0)
       .list-header
         height: 40px
         line-height: 40px
@@ -344,4 +367,41 @@
         max-height: 217px
         overflow: hidden
         background: #fff
+        .food
+          position: relative
+          padding: 12px 0
+          box-sizing: border-box
+          border-1px(rgba(7, 17, 27, 0.1))
+          .name
+            line-height: 24px
+            color: rgb(7, 17, 27)
+            font-size: 14px
+          .price
+            position: absolute
+            right: 90px
+            bottom: 12px
+            line-height: 24px
+            color: rgb(240, 20, 20)
+            font-weight: 700
+            font-size: 14px
+          .cartcontrol-wrapper
+            position: absolute
+            bottom: 6px
+            right: 0
+
+  .list-mask
+    position: fixed
+    top: 0
+    left: 0
+    width: 100%
+    height: 100%
+    z-index: 40
+    opacity: 1
+    backdrop-filter: blur(10px)
+    background: rgba(7, 17, 27, 0.6)
+    .fade-enter-active, .fade-leave-active
+      transition: all .5s
+    .fade-enter, .fade-leave-to
+      opacity: 0
+      background: rgba(7, 17, 27, 0)
 </style>
